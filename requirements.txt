@@ -1,0 +1,11 @@
+easydict==1.9
+mc==0.0
+numpy==1.19.5
+Pillow==9.2.0
+PyYAML==6.0
+requests==2.25.1
+scikit_learn==1.1.1
+tensorboard==2.9.1
+tensorboardX==2.5.1
+torch==1.8.1+cuda90.cudnn7.6.5
+torchvision==0.8.0a0+2f40a48

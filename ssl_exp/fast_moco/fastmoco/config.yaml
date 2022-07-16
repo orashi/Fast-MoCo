@@ -1,0 +1,80 @@
+backbone:                              # architecture details
+    type: resnet50_official         # model name
+    kwargs:
+        zero_init_residual: True # gamma of last bn of every residual block init to 0 following https://arxiv.org/abs/1706.02677
+        num_classes: 2048            # dimension of features
+        bn:
+            use_sync_bn: False      # False Only, using convert_sync_batchnorm with nn.BatchNorm2d
+            kwargs: {}             # kwargs of bn
+
+model:
+    type: FastMoCo
+    kwargs:
+        ema: True
+        arch: comb_patch
+        split_num: 2
+        combs: 2
+
+clip_grad_norm: 1
+
+criterion:
+    type: InfoNCE
+    kwargs:
+        temperature: 1.0
+
+optimizer:                  # optimizer details
+    type: SGD
+    kwargs:
+        nesterov: False
+        momentum: 0.9
+        weight_decay: 0.0001
+
+lr_scheduler:                   # learning rate scheduler details
+    type: WCosConEpoch
+    kwargs:
+        init_lr: 0.025
+        base_lr: 0.1            # initial leaning rate
+        min_lr: 0.0             # mimimal learning rate
+        warmup_epoch: 1
+        max_epoch: 100 #250300it       # total epochs of training
+#         ImageNet size 1281167
+#         bs 512 one epoch is 2502.28it
+
+lms:                      # large model support: utilize cpu to save gpu memory
+    enable: False         # whether to use lms
+    kwargs:
+        limit: 12         # the soft limit in G-bytes on GPU memory allocated for tensors
+
+data:                     # data details
+    type: imagenet        # choices = {'imagenet', 'custom'}
+    read_from: mc         # choices = {'mc', 'fs', 'fake', 'osg'}
+    
+    batch_size: 32         # batch size in one GPU
+    num_workers: 16        # number of subprocesses for data loading
+    pin_memory: True      # whether to copy Tensors into CUDA pinned memory
+    input_size: 224       # training image size             # DIISABLED IN TRANSFORM
+    test_resize: 256      # testing resize image size       # DIISABLED IN TRANSFORM
+
+    train:                            # training data details
+        root_dir:  ..path/..to/images/train/  # Imagenet dataset
+        meta_file:  ..path/..to/images/meta/train.txt   # Imagenet dataset meta file
+        image_reader:                 # image decoding type
+            type: pil
+        sampler:                      # sampler details
+            type: distributed_epoch #distributed_iteration  # distributed iteration-based sampler
+        transforms:                   # torchvision transforms, flexible
+            type: MOCOV2              # 
+
+saver:                                # saving or loading details
+    print_freq: 10                    # frequence of printing logger
+    val_freq: 2500                    # frequence of evaluating / saving during training
+    save_many: False                   # whether to save checkpoints after every evaluation
+    pretrain:  {}                     # autoresume / pretrain model details
+#        path: ***
+#        ignore:                     # ignore keys in checkpoints
+#             key:                    # if training from scratch, pop 'optimzier' and 'last_iter'
+#                 - optimizer         # if resuming from ckpt, DO NOT pop them
+#                 - last_iter
+#             model:                  # ignore modules in model
+#                 - module.fc.weight  # if training with different number of classes, pop the keys
+#                 - module.fc.bias    # of last fully-connected layers
