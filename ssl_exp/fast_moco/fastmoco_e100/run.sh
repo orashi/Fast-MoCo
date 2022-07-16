@@ -10,5 +10,5 @@ do
 done
 
 PYTHONPATH=$PYTHONPATH:../../../ GLOG_vmodule=MemcachedClient=-1 \
-srun --mpi=pmi2 -p $1 --job-name=fastmoco -n16 --gres=gpu:8 --ntasks-per-node=8 --quotatype=auto \
+srun --mpi=pmi2 -p $1 --job-name=fastmoco -n16 --gres=gpu:8 --ntasks-per-node=8  \
 python -u -m core.solver.fastmoco_solver --config config.yaml --tcp_port $PORT 2>&1|tee train-$$now.log &

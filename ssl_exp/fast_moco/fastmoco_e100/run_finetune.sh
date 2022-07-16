@@ -10,5 +10,5 @@ do
 done
 
 PYTHONPATH=$PYTHONPATH:../../../  GLOG_vmodule=MemcachedClient=-1 \
-srun --mpi=pmi2 -p $1 --job-name=linear_eval -n32 --gres=gpu:8 --ntasks-per-node=8  --quotatype=auto \
+srun --mpi=pmi2 -p $1 --job-name=linear_eval -n32 --gres=gpu:8 --ntasks-per-node=8   \
 python -u -m core.solver.linear_solver --config config_finetune.yaml 2>&1|tee train-$$now.log &
