@@ -9,7 +9,7 @@ to corresponding resources.
 
 *Only slurm-based distributed training support is implemented in this repo.
 
-## Usage
+## Experiments
 
 All experiment files are located in `ssl_exp/fast_moco` folder.
 
