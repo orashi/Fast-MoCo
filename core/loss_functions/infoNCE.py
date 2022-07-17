@@ -56,5 +56,5 @@ def concat_all_gather(tensor):
     tensors_gather = [torch.ones_like(tensor) for _ in range(link.get_world_size())]
     dist.all_gather(tensors_gather, tensor)
 
-    output = torch.cat(tensors_gather, dim=0, async_op=False)
+    output = torch.cat(tensors_gather, dim=0)
     return output
