@@ -1,5 +1,4 @@
 easydict==1.9
-mc==0.0
 numpy==1.19.5
 Pillow==9.2.0
 PyYAML==6.0
